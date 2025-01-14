@@ -7,6 +7,7 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
+  UniqueIdentifier, // Import UniqueIdentifier type
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import InputTask from "./InputTask";
@@ -16,16 +17,21 @@ import { useTodoContext } from "../context/TodoContext";
 const TodoComponent = () => {
   const { todos, setTodos } = useTodoContext();
 
-  function getTaskPosition(id: number) {
+  function getTaskPosition(id: UniqueIdentifier | number | undefined) {
     return todos.findIndex((todo) => todo.id === id);
   }
+
   function handelDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (active.id === over?.id) return;
     setTodos((todo) => {
-      const orginalPosition = getTaskPosition(active.id);
-      const newPosition = getTaskPosition(over.id);
-      return arrayMove(todo, orginalPosition, newPosition);
+      const originalPosition = getTaskPosition(active.id);
+      let newPosition;
+      if (!over?.id) {
+        newPosition = getTaskPosition(over?.id);
+      }
+
+      return arrayMove(todo, originalPosition, newPosition || 1);
     });
   }
 
@@ -34,6 +40,7 @@ const TodoComponent = () => {
     useSensor(TouchSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
+
   return (
     <div className="flex justify-center items-center w-2/4 m-auto flex-col mt-24">
       <DndContext
@@ -42,7 +49,6 @@ const TodoComponent = () => {
         collisionDetection={closestCorners}
       >
         <InputTask />
-
         <Colum />
       </DndContext>
     </div>
