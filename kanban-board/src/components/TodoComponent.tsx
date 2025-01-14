@@ -1,6 +1,7 @@
 import {
   closestCorners,
   DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
@@ -18,9 +19,9 @@ const TodoComponent = () => {
   function getTaskPosition(id: number) {
     return todos.findIndex((todo) => todo.id === id);
   }
-  function handelDragEnd(event) {
+  function handelDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    if (active.id === over.id) return;
+    if (active.id === over?.id) return;
     setTodos((todo) => {
       const orginalPosition = getTaskPosition(active.id);
       const newPosition = getTaskPosition(over.id);

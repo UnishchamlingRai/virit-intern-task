@@ -5,7 +5,7 @@ const InputTask = () => {
   const { addTodo } = useTodoContext();
   const [task, setTask] = useState("");
 
-  const handleAddTask = (e) => {
+  const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (task.trim()) {
       addTodo(task);
